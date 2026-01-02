@@ -1,6 +1,9 @@
-# Secure Vault - Encrypted File Storage App
+# Secure File Locker - Encrypted File Storage App with Liveness Detection
 
-A secure mobile application built with React Native (Expo) that allows users to store and encrypt files using AES-256 encryption with keys stored in Android Keystore. Features biometric authentication (Face ID/Fingerprint) for enhanced security.
+
+//Need to update readme.
+
+A secure mobile application built with React Native (Expo) that allows users to store and encrypt files using AES-256 encryption with keys stored in Android Keystore. Features biometric authentication (Face detection and Liveness check/Fingerprint) for enhanced security.
 
 ## 🔐 Features
 
@@ -40,7 +43,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-cd c:\Users\alber\OneDrive\Desktop\vault\CascadeProjects\windsurf-project
+https://github.com/Annjala/FileLocker.git
 ```
 
 ### 2. Install Dependencies
