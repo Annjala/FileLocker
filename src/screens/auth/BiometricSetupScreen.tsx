@@ -82,7 +82,7 @@ export const BiometricSetupScreen = ({ navigation, route }: Props) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }] as any}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={[styles.iconContainer, { backgroundColor: colors.primary + '20' }]}>

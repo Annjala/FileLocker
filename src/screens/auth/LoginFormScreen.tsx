@@ -6,12 +6,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from '../../components/common/Text';
-import { Button } from '../../components/common/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
+type Props = NativeStackScreenProps<AuthStackParamList, 'LoginForm'>;
 
-export const LoginScreen = ({ navigation }: Props) => {
+export const LoginFormScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState('');
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,10 +33,6 @@ export const LoginScreen = ({ navigation }: Props) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const navigateToRegister = () => {
-    navigation.navigate('Register');
   };
 
   return (
@@ -76,7 +71,6 @@ export const LoginScreen = ({ navigation }: Props) => {
               onChangeText={setPin}
               secureTextEntry={!showPin}
               autoCapitalize="none"
-              maxLength={4}
               keyboardType="numeric"
             />
             <TouchableOpacity 

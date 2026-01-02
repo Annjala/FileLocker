@@ -1,12 +1,24 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LoginRegisterScreen } from '../screens/auth/LoginRegisterScreen';
 import { LoginScreen } from '../screens/auth/LoginScreen';
 import { RegisterScreen } from '../screens/auth/RegisterScreen';
 import { BiometricSetupScreen } from '../screens/auth/BiometricSetupScreen';
+import { DetectingFaceScreen } from '../screens/auth/DetectingFaceScreen';
+import { CheckingLivenessScreen } from '../screens/auth/CheckingLivenessScreen';
+import { LoginInitialScreen } from '../screens/auth/LoginInitialScreen';
+import { LoginDetectingFaceScreen } from '../screens/auth/LoginDetectingFaceScreen';
+import { LoginFormScreen } from '../screens/auth/LoginFormScreen';
 
 export type AuthStackParamList = {
+  LoginRegister: undefined;
   Login: undefined;
+  LoginInitial: undefined;
+  LoginDetectingFace: undefined;
+  LoginForm: undefined;
   Register: undefined;
+  DetectingFace: undefined;
+  CheckingLiveness: undefined;
   BiometricSetup: { email: string; password: string };
 };
 
@@ -20,8 +32,14 @@ export const AuthStack = () => {
         animation: 'slide_from_right',
       }}
     >
+      <Stack.Screen name="LoginRegister" component={LoginRegisterScreen} />
+      <Stack.Screen name="LoginInitial" component={LoginInitialScreen} />
+      <Stack.Screen name="LoginDetectingFace" component={LoginDetectingFaceScreen} />
+      <Stack.Screen name="LoginForm" component={LoginFormScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="DetectingFace" component={DetectingFaceScreen} />
+      <Stack.Screen name="CheckingLiveness" component={CheckingLivenessScreen} />
       <Stack.Screen 
         name="BiometricSetup" 
         component={BiometricSetupScreen} 

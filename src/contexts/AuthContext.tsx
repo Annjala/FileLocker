@@ -7,15 +7,15 @@ import { generateEncryptionKey, storeEncryptionKey } from '../utils/security';
 
 type User = {
   id: string;
-  email: string;
+  username: string;
 };
 
 type AuthContextData = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signIn: (username: string, pin: string) => Promise<void>;
+  signUp: (username: string, pin: string) => Promise<void>;
   signOut: () => Promise<void>;
   setupBiometricAuth: () => Promise<boolean>;
   authenticateWithBiometrics: () => Promise<boolean>;
@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (session?.user) {
           setUser({
             id: session.user.id,
-            email: session.user.email || '',
+            username: session.user.user_metadata?.username || session.user.email?.split('@')[0] || '',
           });
         }
       } catch (error) {
@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (session?.user) {
         setUser({
           id: session.user.id,
-          email: session.user.email || '',
+          username: session.user.user_metadata?.username || session.user.email?.split('@')[0] || '',
         });
       } else {
         setUser(null);
@@ -72,11 +72,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (username: string, pin: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: username, // Use the email directly
+        password: pin,
       });
 
       if (error) throw error;
@@ -84,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data.user) {
         setUser({
           id: data.user.id,
-          email: data.user.email || '',
+          username: username,
         });
       }
     } catch (error) {
@@ -93,11 +93,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (username: string, pin: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: username, // Use the email directly
+        password: pin,
+        options: {
+          data: {
+            username: username,
+          },
+        },
       });
 
       if (error) throw error;
