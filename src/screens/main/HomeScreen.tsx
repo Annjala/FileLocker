@@ -222,15 +222,26 @@ export const HomeScreen = () => {
         return;
       }
       
+      // Create a temporary file and use its URI
+      const tempUri = FileSystem.cacheDirectory + 'temp_' + file.file_name;
+      await FileSystem.writeAsStringAsync(tempUri, decryptedData, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      
       // Log debugging information
       console.log('File info:', file);
       console.log('File content length:', decryptedData.length);
       console.log('File content type:', typeof decryptedData);
       console.log('First 50 chars:', decryptedData.substring(0, 50));
+      console.log('Temp file URI:', tempUri);
       
-      // Set the viewing file and content
+      // Check if it's a valid base64 image
+      const isValidBase64 = /^[A-Za-z0-9+/]+={0,2}$/.test(decryptedData);
+      console.log('Is valid base64:', isValidBase64);
+      
+      // Set the viewing file and use the actual temp file URI
       setViewingFile(file);
-      setFileContent(decryptedData);
+      setFileContent(tempUri); // Use the actual temp file URI
       setShowFileViewer(true);
 
     } catch (error) {
@@ -355,44 +366,44 @@ export const HomeScreen = () => {
       {/* File Viewer Modal */}
       <Modal
         visible={showFileViewer}
-        transparent={true}
         animationType="slide"
         onRequestClose={() => setShowFileViewer(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.fileViewerContent}>
-            <View style={styles.fileViewerHeader}>
-              <Text style={styles.fileViewerTitle}>{viewingFile?.file_name}</Text>
-              <TouchableOpacity 
-                style={styles.closeViewerButton}
-                onPress={() => setShowFileViewer(false)}
-              >
-                <Ionicons name="close" size={24} color={COLORS.TEXT} />
-              </TouchableOpacity>
-            </View>
-            
-            <ScrollView style={styles.fileViewerBody}>
-              {viewingFile?.mime_type.startsWith('image/') || viewingFile?.file_name?.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-                <Image 
-                  source={{ uri: `data:image/jpeg;base64,${fileContent}` }}
-                  style={styles.fileViewerImage}
-                  resizeMode="contain"
-                />
-              ) : viewingFile?.mime_type.includes('text') || viewingFile?.file_name?.match(/\.(txt)$/i) ? (
-                <View style={styles.textContentView}>
-                  <Text style={styles.textContent}>{fileContent}</Text>
-                </View>
-              ) : (
-                <View style={styles.fileInfoView}>
-                  <Ionicons name="document" size={60} color={COLORS.BUTTON} />
-                  <Text style={styles.fileInfoText}>File Type: {viewingFile?.mime_type}</Text>
-                  <Text style={styles.fileInfoText}>Size: {formatFileSize(viewingFile?.size || 0)}</Text>
-                  <Text style={styles.fileInfoText}>File Name: {viewingFile?.file_name}</Text>
-                  <Text style={styles.fileInfoText}>This file type cannot be displayed within the app.</Text>
-                </View>
-              )}
-            </ScrollView>
+        <View style={styles.fullScreenViewer}>
+          <View style={styles.fullScreenHeader}>
+            <TouchableOpacity 
+              style={styles.backButton}
+              onPress={() => setShowFileViewer(false)}
+            >
+              <Ionicons name="arrow-back" size={24} color={COLORS.TEXT} />
+            </TouchableOpacity>
+            <Text style={styles.fullScreenTitle}>{viewingFile?.file_name}</Text>
+            <View style={styles.headerSpacer} />
           </View>
+          
+          <ScrollView style={styles.fullScreenBody}>
+            {viewingFile?.mime_type.startsWith('image/') || viewingFile?.file_name?.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+              <Image 
+                source={{ uri: fileContent }}
+                style={styles.fullScreenImage}
+                resizeMode="contain"
+                onError={(error) => console.log('Image error:', error)}
+                onLoad={() => console.log('Image loaded successfully')}
+              />
+            ) : viewingFile?.mime_type.includes('text') || viewingFile?.file_name?.match(/\.(txt)$/i) ? (
+              <View style={styles.fullScreenTextContainer}>
+                <Text style={styles.fullScreenText}>{fileContent}</Text>
+              </View>
+            ) : (
+              <View style={styles.fullScreenInfoContainer}>
+                <Ionicons name="document" size={80} color={COLORS.BUTTON} />
+                <Text style={styles.fullScreenInfoText}>File Type: {viewingFile?.mime_type}</Text>
+                <Text style={styles.fullScreenInfoText}>Size: {formatFileSize(viewingFile?.size || 0)}</Text>
+                <Text style={styles.fullScreenInfoText}>File Name: {viewingFile?.file_name}</Text>
+                <Text style={styles.fullScreenInfoText}>This file type cannot be displayed within the app.</Text>
+              </View>
+            )}
+          </ScrollView>
         </View>
       </Modal>
 
@@ -707,6 +718,64 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.TEXT,
     marginTop: 10,
+    textAlign: 'center',
+  },
+  fullScreenViewer: {
+    flex: 1,
+    backgroundColor: COLORS.SCREEN_SKIN,
+  },
+  fullScreenHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    paddingTop: 50,
+    backgroundColor: COLORS.PANEL,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.TEXT,
+  },
+  backButton: {
+    padding: 5,
+    marginRight: 15,
+  },
+  fullScreenTitle: {
+    fontSize: 18,
+    fontFamily: 'Grandstander_700Bold',
+    color: COLORS.TEXT,
+    flex: 1,
+  },
+  headerSpacer: {
+    width: 34,
+  },
+  fullScreenBody: {
+    flex: 1,
+    backgroundColor: COLORS.SCREEN_SKIN,
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: COLORS.SCREEN_SKIN,
+    minHeight: '100%',
+  },
+  fullScreenTextContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  fullScreenText: {
+    fontSize: 16,
+    color: COLORS.TEXT,
+    lineHeight: 24,
+  },
+  fullScreenInfoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+    backgroundColor: COLORS.SCREEN_SKIN,
+  },
+  fullScreenInfoText: {
+    fontSize: 18,
+    color: COLORS.TEXT,
+    marginTop: 15,
     textAlign: 'center',
   },
 });
