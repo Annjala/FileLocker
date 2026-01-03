@@ -1,9 +1,15 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../navigation/AuthStack';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../../theme/ThemeContext';
 import { Text } from '../../components/common/Text';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  useFonts,
+  Grandstander_700Bold,
+  Grandstander_400Regular,
+} from '@expo-google-fonts/grandstander';
 
 // Color constants
 const COLORS = {
@@ -16,6 +22,11 @@ const COLORS = {
 type Props = NativeStackScreenProps<AuthStackParamList, 'LoginRegister'>;
 
 export const LoginRegisterScreen = ({ navigation }: Props) => {
+  let [fontsLoaded] = useFonts({
+    Grandstander_700Bold,
+    Grandstander_400Regular,
+  });
+
   const handleRegisterPress = () => {
     navigation.navigate('DetectingFace');
   };
@@ -23,6 +34,10 @@ export const LoginRegisterScreen = ({ navigation }: Props) => {
   const handleLoginPress = () => {
     navigation.navigate('LoginDetectingFace');
   };
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: COLORS.SCREEN_SKIN }]}>
@@ -73,12 +88,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontFamily: 'Grandstander_700Bold',
     letterSpacing: 0.5,
   },
   promptText: {
-    fontSize: 14,
+    fontSize: 16,
+    fontFamily: 'Grandstander_400Regular',
     color: COLORS.TEXT,
     textAlign: 'left', // Left aligned
     marginLeft: 1,

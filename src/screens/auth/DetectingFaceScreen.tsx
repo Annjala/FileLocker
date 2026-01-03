@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../navigation/AuthStack';
 import { useTheme } from '../../theme/ThemeContext';
 import { Text } from '../../components/common/Text';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  useFonts,
+  Grandstander_700Bold,
+  Grandstander_400Regular,
+} from '@expo-google-fonts/grandstander';
 
 // Color constants
 const COLORS = {
@@ -14,45 +19,49 @@ const COLORS = {
   PLACEHOLDER: '#6B7280',
 };
 
-// Custom Loader Component
+// Custom Animated Loader Component
 const CustomLoader = () => {
+  const rotationAnim = new Animated.Value(0);
+  
+  useEffect(() => {
+    const rotateAnimation = Animated.loop(
+      Animated.timing(rotationAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      })
+    );
+    rotateAnimation.start();
+    
+    return () => rotateAnimation.stop();
+  }, []);
+
+  const rotate = rotationAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
   return (
     <View style={loaderStyles.container}>
-      <View style={[loaderStyles.dot, loaderStyles.dot1]} />
-      <View style={[loaderStyles.dot, loaderStyles.dot2]} />
-      <View style={[loaderStyles.dot, loaderStyles.dot3]} />
-      <View style={[loaderStyles.dot, loaderStyles.dot4]} />
-      <View style={[loaderStyles.dot, loaderStyles.dot5]} />
+      <Animated.View style={[loaderStyles.circle, { transform: [{ rotate }] }]} />
     </View>
   );
 };
 
 const loaderStyles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 2,
+    justifyContent: 'center',
   },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: COLORS.TEXT,
-  },
-  dot1: {
-    opacity: 1,
-  },
-  dot2: {
-    opacity: 0.8,
-  },
-  dot3: {
-    opacity: 0.6,
-  },
-  dot4: {
-    opacity: 0.4,
-  },
-  dot5: {
-    opacity: 0.2,
+  circle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 3,
+    borderColor: COLORS.TEXT,
+    borderTopColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'transparent',
   },
 });
 
@@ -61,11 +70,20 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'DetectingFace'>;
 export const DetectingFaceScreen = ({ navigation }: Props) => {
   const { colors } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
+  
+  let [fontsLoaded] = useFonts({
+    Grandstander_700Bold,
+    Grandstander_400Regular,
+  });
 
   const handlePress = () => {
     setIsLoading(false);
     navigation.navigate('Register');
   };
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: COLORS.SCREEN_SKIN }]}>
@@ -76,7 +94,9 @@ export const DetectingFaceScreen = ({ navigation }: Props) => {
       >
         <View style={styles.content}>
           <Text style={styles.title}>DETECTING FACE</Text>
-          {isLoading ? <CustomLoader /> : null}
+          <View style={styles.loaderContainer}>
+            <CustomLoader />
+          </View>
           <Text style={styles.subtitle}>PLEASE WAIT FOR</Text>
           <Text style={styles.subtitle}>A MOMENT</Text>
         </View>
@@ -93,25 +113,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 40,
   },
   content: {
     alignItems: 'center',
-    gap: 30, // Proper space between title and loader
+    width: '100%',
   },
   title: {
-    fontSize: 28, // BIG title font
-    fontWeight: '700',
+    fontSize: 28,
+    fontFamily: 'Grandstander_700Bold',
     color: COLORS.TEXT,
     textAlign: 'center',
-    letterSpacing: 2,
-    marginBottom: 0,
+    letterSpacing: 1.5,
+    marginBottom: 60,
+  },
+  loaderContainer: {
+    marginBottom: 60,
   },
   subtitle: {
-    fontSize: 18, // BIG subtitle font
+    fontSize: 28,
+    fontFamily: 'Grandstander_700Bold',
     color: COLORS.TEXT,
     textAlign: 'center',
-    lineHeight: 22, // More space between lines
-    letterSpacing: 1,
-    marginTop: 30, // Space between loader and subtitle
+    lineHeight: 34,
+    letterSpacing: 1.5,
   },
 });

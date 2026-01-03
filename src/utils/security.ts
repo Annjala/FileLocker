@@ -71,7 +71,6 @@ export const getEncryptionKey = async (userId: string): Promise<string | null> =
       });
       
       if (!key) {
-        console.log('No encryption key found for user:', userId);
         return null;
       }
       
@@ -87,7 +86,6 @@ export const getEncryptionKey = async (userId: string): Promise<string | null> =
       });
       
       if (!credentials) {
-        console.log('No encryption key found in keychain for user:', userId);
         return null;
       }
       
@@ -96,12 +94,12 @@ export const getEncryptionKey = async (userId: string): Promise<string | null> =
   } catch (error) {
     console.error('Error retrieving encryption key:', error);
     if (error instanceof Error) {
-      if (error.message?.includes('UserCancel')) {
-        console.log('User cancelled biometric authentication');
-      } else if (error.message?.includes('BiometryNotAvailable')) {
-        console.log('Biometric authentication not available');
+        if (error.message?.includes('UserCancel')) {
+          // User cancelled - no need to log
+        } else if (error.message?.includes('BiometryNotAvailable')) {
+          // Biometry not available - no need to log
+        }
       }
-    }
     return null;
   }
 };
@@ -177,11 +175,16 @@ export const hashPassword = async (password: string): Promise<string> => {
 export const hasEncryptionKey = async (userId: string): Promise<boolean> => {
   try {
     if (Platform.OS === 'android') {
-      const key = await SecureStore.getItemAsync(`encryption_key_${userId}`);
+      const key = await SecureStore.getItemAsync(`ek_${userId.substring(0, 8)}`);
       return key !== null;
     } else {
       const credentials = await Keychain.getGenericPassword({
         service: KEYCHAIN_SERVICE,
+      authenticationPrompt: {
+          title: 'Authentication required',
+          subtitle: 'Authenticate to access your encrypted files',
+          description: 'Please authenticate to unlock your secure vault',
+        },
       });
       return credentials !== false;
     }
@@ -195,7 +198,7 @@ export const hasEncryptionKey = async (userId: string): Promise<boolean> => {
 export const deleteEncryptionKey = async (userId: string): Promise<boolean> => {
   try {
     if (Platform.OS === 'android') {
-      await SecureStore.deleteItemAsync(`encryption_key_${userId}`);
+      await SecureStore.deleteItemAsync(`ek_${userId.substring(0, 8)}`);
     } else {
       await Keychain.resetGenericPassword({
         service: KEYCHAIN_SERVICE,

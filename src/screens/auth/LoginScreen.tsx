@@ -5,6 +5,11 @@ import { AuthStackParamList } from '../../navigation/AuthStack';
 import { useAuth } from '../../contexts/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '../../components/common/Text';
+import {
+  useFonts,
+  Grandstander_700Bold,
+  Grandstander_400Regular,
+} from '@expo-google-fonts/grandstander';
 
 // Color constants
 const COLORS = {
@@ -21,6 +26,15 @@ export const LoginScreen = ({ navigation }: Props) => {
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
+  
+  let [fontsLoaded] = useFonts({
+    Grandstander_700Bold,
+    Grandstander_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const handleLogin = async () => {
     if (!email || !pin) {
@@ -102,6 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
+    fontFamily: 'Grandstander_400Regular',
     color: COLORS.TEXT,
     borderWidth: 1,
     borderColor: '#D1D5DB',
@@ -115,8 +130,8 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontFamily: 'Grandstander_700Bold',
     letterSpacing: 0.5,
   },
   loadingOverlay: {

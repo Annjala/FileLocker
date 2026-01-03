@@ -5,6 +5,11 @@ import { AuthStackParamList } from '../../navigation/AuthStack';
 import { useAuth } from '../../contexts/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '../../components/common/Text';
+import {
+  useFonts,
+  Grandstander_700Bold,
+  Grandstander_400Regular,
+} from '@expo-google-fonts/grandstander';
 
 // Color constants
 const COLORS = {
@@ -24,6 +29,15 @@ export const RegisterScreen = ({ navigation }: Props) => {
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   const { signUp } = useAuth();
+  
+  let [fontsLoaded] = useFonts({
+    Grandstander_700Bold,
+    Grandstander_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const validateForm = (): boolean => {
     if (!username.trim()) {
@@ -161,6 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
+    fontFamily: 'Grandstander_400Regular',
     color: COLORS.TEXT,
     borderWidth: 1,
     borderColor: '#D1D5DB',
@@ -188,16 +203,18 @@ const styles = StyleSheet.create({
   checkmark: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily: 'Grandstander_700Bold',
   },
   termsText: {
     flex: 1,
     fontSize: 14,
+    fontFamily: 'Grandstander_400Regular',
     color: COLORS.TEXT,
   },
   linkText: {
     color: COLORS.BUTTON,
     textDecorationLine: 'underline',
+    fontFamily: 'Grandstander_400Regular',
   },
   registerButton: {
     backgroundColor: COLORS.BUTTON,
@@ -208,8 +225,8 @@ const styles = StyleSheet.create({
   },
   registerButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontFamily: 'Grandstander_700Bold',
     letterSpacing: 0.5,
   },
 });

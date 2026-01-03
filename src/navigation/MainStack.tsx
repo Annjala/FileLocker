@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HomeScreen } from '../screens/main/HomeScreen';
 import { FileListScreen } from '../screens/files/FileListScreen';
-import { UploadFileScreen } from '../screens/files/UploadFileScreen';
 import { FileDetailsScreen } from '../screens/files/FileDetailsScreen';
 import { SettingsScreen } from '../screens/settings/SettingsScreen';
 import { EncryptionKeyScreen } from '../screens/settings/EncryptionKeyScreen';
@@ -14,7 +13,6 @@ import { useTheme } from '../theme/ThemeContext';
 
 export type MainTabParamList = {
   Files: undefined;
-  Upload: undefined;
   Settings: undefined;
 };
 
@@ -39,8 +37,6 @@ const MainTabs = () => {
 
           if (route.name === 'Files') {
             iconName = focused ? 'folder' : 'folder-outline';
-          } else if (route.name === 'Upload') {
-            iconName = focused ? 'cloud-upload' : 'cloud-upload-outline';
           } else if (route.name === 'Settings') {
             iconName = focused ? 'settings' : 'settings-outline';
           }
@@ -58,13 +54,8 @@ const MainTabs = () => {
     >
       <Tab.Screen 
         name="Files" 
-        component={FileListScreen} 
-        options={{ title: 'My Files' }} 
-      />
-      <Tab.Screen 
-        name="Upload" 
-        component={UploadFileScreen} 
-        options={{ title: 'Upload' }} 
+        component={HomeScreen} 
+        options={{ title: 'Home' }} 
       />
       <Tab.Screen 
         name="Settings" 
