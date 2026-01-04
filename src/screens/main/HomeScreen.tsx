@@ -4,6 +4,7 @@ import { WebView } from 'react-native-webview';
 import { Text } from '../../components/common/Text';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import {
   useFonts,
   Grandstander_700Bold,
@@ -19,15 +20,8 @@ import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
 import RNPDFLib from 'react-native-pdf-lib';
 
-const COLORS = {
-  TEXT: '#483847',
-  SCREEN_SKIN: '#EFD7ED',
-  BUTTON: '#b378afff',
-  PANEL: '#D7B3D5',
-};
-
 export const HomeScreen = () => {
-  const [activeTab, setActiveTab] = useState('home');
+  const { colors } = useTheme();
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showPinPrompt, setShowPinPrompt] = useState(false);
@@ -51,6 +45,385 @@ export const HomeScreen = () => {
   if (!fontsLoaded) {
     return null;
   }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.SCREEN_SKIN,
+    },
+    mainContent: {
+      flex: 1,
+    },
+    content: {
+      flex: 1,
+      padding: 20,
+      justifyContent: 'center',
+    },
+    optionsContainer: {
+      gap: 20,
+    },
+    optionButton: {
+      backgroundColor: colors.BUTTON,
+      paddingVertical: 20,
+      paddingHorizontal: 30,
+      borderRadius: 15,
+      alignItems: 'center',
+    },
+    optionText: {
+      fontSize: 18,
+      fontFamily: 'Grandstander_700Bold',
+      color: '#FFFFFF',
+    },
+    uploadButton: {
+      backgroundColor: '#28a745',
+    },
+    bottomNavigation: {
+      flexDirection: 'row',
+      backgroundColor: colors.PANEL,
+      paddingBottom: 10,
+      paddingTop: 10,
+    },
+    navButton: {
+      flex: 1,
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
+    activeNavButton: {
+      backgroundColor: 'transparent',
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: colors.SCREEN_SKIN,
+      padding: 30,
+      borderRadius: 15,
+      width: '80%',
+      alignItems: 'center',
+      elevation: 5,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.TEXT,
+      marginBottom: 20,
+      textAlign: 'center',
+    },
+    modalMessage: {
+      fontSize: 16,
+      color: colors.TEXT,
+      textAlign: 'center',
+      marginBottom: 30,
+      lineHeight: 24,
+    },
+    pinInput: {
+      width: '100%',
+      height: 50,
+      backgroundColor: '#FFFFFF',
+      borderWidth: 2,
+      borderColor: colors.BUTTON,
+      borderRadius: 10,
+      paddingHorizontal: 15,
+      fontSize: 16,
+      marginBottom: 25,
+      fontFamily: 'Grandstander_400Regular',
+    },
+    modalButtons: {
+      flexDirection: 'row',
+      gap: 15,
+      width: '100%',
+    },
+    modalButton: {
+      flex: 1,
+      paddingVertical: 15,
+      borderRadius: 10,
+      alignItems: 'center',
+      elevation: 2,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+    },
+    cancelButton: {
+      backgroundColor: '#E5E7EB',
+    },
+    confirmButton: {
+      backgroundColor: colors.BUTTON,
+    },
+    cancelButtonText: {
+      fontSize: 16,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.TEXT,
+    },
+    confirmButtonText: {
+      fontSize: 16,
+      fontFamily: 'Grandstander_700Bold',
+      color: '#FFFFFF',
+    },
+    filesModalContent: {
+      backgroundColor: colors.SCREEN_SKIN,
+      padding: 30,
+      borderRadius: 15,
+      width: '90%',
+      maxHeight: '80%',
+      alignItems: 'center',
+      elevation: 5,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+    },
+    emptyFilesState: {
+      alignItems: 'center',
+      paddingVertical: 40,
+    },
+    emptyFilesText: {
+      fontSize: 16,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.TEXT,
+      marginTop: 15,
+      textAlign: 'center',
+    },
+    fileItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: '#E0E0E0',
+    },
+    fileIconContainer: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.BUTTON + '20',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 15,
+    },
+    fileInfo: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    fileName: {
+      fontSize: 16,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.TEXT,
+      marginBottom: 5,
+    },
+    fileSize: {
+      fontSize: 14,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.TEXT,
+    },
+    encryptedBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.BUTTON + '20',
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 10,
+      marginTop: 5,
+    },
+    encryptedText: {
+      fontSize: 12,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.BUTTON,
+      marginLeft: 5,
+    },
+    filesList: {
+      width: '100%',
+    },
+    closeModalButton: {
+      backgroundColor: colors.BUTTON,
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginTop: 20,
+    },
+    closeModalButtonText: {
+      fontSize: 16,
+      fontFamily: 'Grandstander_700Bold',
+      color: '#FFFFFF',
+    },
+    fileViewerContent: {
+      backgroundColor: colors.PANEL,
+      borderRadius: 20,
+      margin: 20,
+      maxHeight: '80%',
+      flex: 1,
+    },
+    fileViewerHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.TEXT,
+    },
+    fileViewerTitle: {
+      fontSize: 18,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.TEXT,
+      flex: 1,
+    },
+    closeViewerButton: {
+      padding: 5,
+    },
+    fileViewerBody: {
+      flex: 1,
+      padding: 20,
+    },
+    fileViewerImage: {
+      width: '100%',
+      height: 300,
+      borderRadius: 10,
+    },
+    textContentView: {
+      flex: 1,
+    },
+    textContent: {
+      fontSize: 14,
+      color: colors.TEXT,
+      lineHeight: 20,
+    },
+    fileInfoView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 40,
+    },
+    fileInfoText: {
+      fontSize: 16,
+      color: colors.TEXT,
+      marginTop: 10,
+      textAlign: 'center',
+    },
+    fullScreenViewer: {
+      flex: 1,
+      backgroundColor: colors.SCREEN_SKIN,
+    },
+    fullScreenHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 15,
+      paddingTop: 50,
+      backgroundColor: colors.PANEL,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.TEXT,
+    },
+    backButton: {
+      padding: 5,
+      marginRight: 15,
+    },
+    fullScreenTitle: {
+      fontSize: 18,
+      fontFamily: 'Grandstander_700Bold',
+      color: colors.TEXT,
+      flex: 1,
+    },
+    headerSpacer: {
+      width: 34,
+    },
+    fullScreenBody: {
+      flex: 1,
+      backgroundColor: colors.SCREEN_SKIN,
+    },
+    fullScreenImage: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.SCREEN_SKIN,
+      minHeight: '100%',
+    },
+    fullScreenPdf: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#f0f0f0',
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.SCREEN_SKIN,
+    },
+    loadingText: {
+      marginTop: 10,
+      fontSize: 16,
+      color: colors.TEXT,
+      fontFamily: 'Grandstander_700Bold',
+    },
+    fullScreenTextContainer: {
+      flex: 1,
+      padding: 20,
+    },
+    fullScreenText: {
+      fontSize: 16,
+      color: colors.TEXT,
+      lineHeight: 24,
+    },
+    pdfPreviewContainer: {
+      flex: 1,
+      backgroundColor: '#f5f5f5',
+      borderRadius: 10,
+      padding: 15,
+      marginTop: 10,
+      maxHeight: 300,
+    },
+    pdfPreviewText: {
+      fontSize: 12,
+      color: colors.TEXT,
+      fontFamily: 'monospace',
+      lineHeight: 16,
+    },
+    fullScreenInfoContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 40,
+      backgroundColor: colors.SCREEN_SKIN,
+    },
+    fullScreenInfoText: {
+      fontSize: 18,
+      color: colors.TEXT,
+      marginTop: 15,
+      textAlign: 'center',
+    },
+    openPdfButton: {
+      backgroundColor: colors.BUTTON,
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginTop: 20,
+    },
+    openPdfButtonText: {
+      fontSize: 16,
+      fontFamily: 'Grandstander_700Bold',
+      color: '#FFFFFF',
+    },
+    openFileButton: {
+      backgroundColor: colors.BUTTON,
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginTop: 20,
+    },
+    openFileButtonText: {
+      fontSize: 16,
+      fontFamily: 'Grandstander_700Bold',
+      color: '#FFFFFF',
+    },
+  });
 
   const pickDocument = async () => {
     try {
@@ -383,31 +756,7 @@ export const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContent}>
-        {activeTab === 'home' ? renderHome() : renderSettings()}
-      </View>
-      
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity 
-          style={[styles.navButton, activeTab === 'home' && styles.activeNavButton]}
-          onPress={() => setActiveTab('home')}
-        >
-          <Ionicons 
-            name="home" 
-            size={20} 
-            color={activeTab === 'home' ? '#FFFFFF' : '#FFFFFF'} 
-          />
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.navButton, activeTab === 'settings' && styles.activeNavButton]}
-          onPress={() => setActiveTab('settings')}
-        >
-          <Ionicons 
-            name="settings" 
-            size={20} 
-            color={activeTab === 'settings' ? '#FFFFFF' : '#FFFFFF'} 
-          />
-        </TouchableOpacity>
+        {renderHome()}
       </View>
 
       <>
@@ -463,7 +812,7 @@ export const HomeScreen = () => {
                 style={styles.backButton}
                 onPress={() => setShowFileViewer(false)}
               >
-                <Ionicons name="arrow-back" size={24} color={COLORS.TEXT} />
+                <Ionicons name="arrow-back" size={24} color={colors.TEXT} />
               </TouchableOpacity>
               <Text style={styles.fullScreenTitle}>{viewingFile?.file_name}</Text>
               <View style={styles.headerSpacer} />
@@ -480,7 +829,7 @@ export const HomeScreen = () => {
                 />
               ) : viewingFile?.file_name?.match(/\.(pdf)$/i) ? (
                 <View style={styles.fullScreenInfoContainer}>
-                  <Ionicons name="document-text" size={80} color={COLORS.BUTTON} />
+                  <Ionicons name="document-text" size={80} color={colors.BUTTON} />
                   <Text style={styles.fullScreenInfoText}>PDF Document</Text>
                   <Text style={styles.fullScreenInfoText}>File Name: {viewingFile?.file_name}</Text>
                   <Text style={styles.fullScreenInfoText}>Size: {formatFileSize(viewingFile?.size || 0)}</Text>
@@ -516,7 +865,7 @@ export const HomeScreen = () => {
                 </View>
               ) : viewingFile?.file_name?.match(/\.(doc|docx|xls|xlsx|ppt|pptx)$/i) ? (
                 <View style={styles.fullScreenInfoContainer}>
-                  <Ionicons name="document-text" size={80} color={COLORS.BUTTON} />
+                  <Ionicons name="document-text" size={80} color={colors.BUTTON} />
                   <Text style={styles.fullScreenInfoText}>Document File</Text>
                   <Text style={styles.fullScreenInfoText}>File Name: {viewingFile?.file_name}</Text>
                   <Text style={styles.fullScreenInfoText}>Size: {formatFileSize(viewingFile?.size || 0)}</Text>
@@ -536,7 +885,7 @@ export const HomeScreen = () => {
                 </View>
               ) : (
                 <View style={styles.fullScreenInfoContainer}>
-                  <Ionicons name="document" size={80} color={COLORS.BUTTON} />
+                  <Ionicons name="document" size={80} color={colors.BUTTON} />
                   <Text style={styles.fullScreenInfoText}>File Type: {viewingFile?.mime_type}</Text>
                   <Text style={styles.fullScreenInfoText}>Size: {formatFileSize(viewingFile?.size || 0)}</Text>
                   <Text style={styles.fullScreenInfoText}>File Name: {viewingFile?.file_name}</Text>
@@ -569,10 +918,10 @@ export const HomeScreen = () => {
             <View style={styles.filesModalContent}>
               <Text style={styles.modalTitle}>My Files</Text>
               {isLoadingFiles ? (
-                <ActivityIndicator size="large" color={COLORS.BUTTON} />
+                <ActivityIndicator size="large" color={colors.BUTTON} />
               ) : files.length === 0 ? (
                 <View style={styles.emptyFilesState}>
-                  <Ionicons name="folder-open-outline" size={60} color={COLORS.TEXT} />
+                  <Ionicons name="folder-open-outline" size={60} color={colors.TEXT} />
                   <Text style={styles.emptyFilesText}>No files uploaded yet</Text>
                 </View>
               ) : (
@@ -585,14 +934,14 @@ export const HomeScreen = () => {
                       onPress={() => handleViewFile(item)}
                     >
                       <View style={styles.fileIconContainer}>
-                        <Ionicons name={getFileIcon(item.mime_type)} size={24} color={COLORS.BUTTON} />
+                        <Ionicons name={getFileIcon(item.mime_type)} size={24} color={colors.BUTTON} />
                       </View>
                       <View style={styles.fileInfo}>
                         <Text style={styles.fileName}>{item.file_name}</Text>
                         <Text style={styles.fileSize}>{formatFileSize(item.size)}</Text>
                         {item.is_encrypted && (
                           <View style={styles.encryptedBadge}>
-                            <Ionicons name="lock-closed" size={12} color={COLORS.BUTTON} />
+                            <Ionicons name="lock-closed" size={12} color={colors.BUTTON} />
                             <Text style={styles.encryptedText}>Encrypted</Text>
                           </View>
                         )}
@@ -623,10 +972,10 @@ export const HomeScreen = () => {
             <View style={styles.filesModalContent}>
               <Text style={styles.modalTitle}>Select File to Delete</Text>
               {isLoadingFiles ? (
-                <ActivityIndicator size="large" color={COLORS.BUTTON} />
+                <ActivityIndicator size="large" color={colors.BUTTON} />
               ) : files.length === 0 ? (
                 <View style={styles.emptyFilesState}>
-                  <Ionicons name="document" size={40} color={COLORS.TEXT} />
+                  <Ionicons name="document" size={40} color={colors.TEXT} />
                   <Text style={styles.emptyFilesText}>No files to delete</Text>
                 </View>
               ) : (
@@ -643,14 +992,14 @@ export const HomeScreen = () => {
                         <Ionicons
                           name={getFileIcon(item.mime_type)}
                           size={20}
-                          color={COLORS.BUTTON}
+                          color={colors.BUTTON}
                         />
                       </View>
                       <View style={styles.fileInfo}>
                         <Text style={styles.fileName}>{item.file_name}</Text>
                         <Text style={styles.fileSize}>{formatFileSize(item.size || 0)}</Text>
                         <View style={styles.encryptedBadge}>
-                          <Ionicons name="lock-closed" size={12} color={COLORS.BUTTON} />
+                          <Ionicons name="lock-closed" size={12} color={colors.BUTTON} />
                           <Text style={styles.encryptedText}>Encrypted</Text>
                         </View>
                       </View>
@@ -713,389 +1062,3 @@ export const HomeScreen = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.SCREEN_SKIN,
-  },
-  mainContent: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-  },
-  optionsContainer: {
-    gap: 20,
-  },
-  optionButton: {
-    backgroundColor: COLORS.BUTTON,
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-  },
-  optionText: {
-    fontSize: 18,
-    fontFamily: 'Grandstander_700Bold',
-    color: '#FFFFFF',
-  },
-  uploadButton: {
-    backgroundColor: '#28a745',
-  },
-  bottomNavigation: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.PANEL,
-    paddingBottom: 10,
-    paddingTop: 10,
-  },
-  navButton: {
-    flex: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    borderRadius: 15,
-    alignItems: 'center',
-    backgroundColor: COLORS.BUTTON,
-    marginHorizontal: 10,
-  },
-  activeNavButton: {
-    backgroundColor: COLORS.BUTTON,
-    marginHorizontal: 10,
-    borderRadius: 15,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: COLORS.SCREEN_SKIN,
-    padding: 30,
-    borderRadius: 15,
-    width: '80%',
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.TEXT,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  modalMessage: {
-    fontSize: 16,
-    color: COLORS.TEXT,
-    textAlign: 'center',
-    marginBottom: 30,
-    lineHeight: 24,
-  },
-  pinInput: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: COLORS.BUTTON,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    marginBottom: 25,
-    fontFamily: 'Grandstander_400Regular',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 15,
-    width: '100%',
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  cancelButton: {
-    backgroundColor: '#E5E7EB',
-  },
-  confirmButton: {
-    backgroundColor: COLORS.BUTTON,
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.TEXT,
-  },
-  confirmButtonText: {
-    fontSize: 16,
-    fontFamily: 'Grandstander_700Bold',
-    color: '#FFFFFF',
-  },
-  filesModalContent: {
-    backgroundColor: COLORS.SCREEN_SKIN,
-    padding: 30,
-    borderRadius: 15,
-    width: '90%',
-    maxHeight: '80%',
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  emptyFilesState: {
-    alignItems: 'center',
-    paddingVertical: 40,
-  },
-  emptyFilesText: {
-    fontSize: 16,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.TEXT,
-    marginTop: 15,
-    textAlign: 'center',
-  },
-  fileItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  fileIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.BUTTON + '20',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  fileInfo: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  fileName: {
-    fontSize: 16,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.TEXT,
-    marginBottom: 5,
-  },
-  fileSize: {
-    fontSize: 14,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.TEXT,
-  },
-  encryptedBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.BUTTON + '20',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 10,
-    marginTop: 5,
-  },
-  encryptedText: {
-    fontSize: 12,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.BUTTON,
-    marginLeft: 5,
-  },
-  filesList: {
-    width: '100%',
-  },
-  closeModalButton: {
-    backgroundColor: COLORS.BUTTON,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  closeModalButtonText: {
-    fontSize: 16,
-    fontFamily: 'Grandstander_700Bold',
-    color: '#FFFFFF',
-  },
-  fileViewerContent: {
-    backgroundColor: COLORS.PANEL,
-    borderRadius: 20,
-    margin: 20,
-    maxHeight: '80%',
-    flex: 1,
-  },
-  fileViewerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.TEXT,
-  },
-  fileViewerTitle: {
-    fontSize: 18,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.TEXT,
-    flex: 1,
-  },
-  closeViewerButton: {
-    padding: 5,
-  },
-  fileViewerBody: {
-    flex: 1,
-    padding: 20,
-  },
-  fileViewerImage: {
-    width: '100%',
-    height: 300,
-    borderRadius: 10,
-  },
-  textContentView: {
-    flex: 1,
-  },
-  textContent: {
-    fontSize: 14,
-    color: COLORS.TEXT,
-    lineHeight: 20,
-  },
-  fileInfoView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  fileInfoText: {
-    fontSize: 16,
-    color: COLORS.TEXT,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  fullScreenViewer: {
-    flex: 1,
-    backgroundColor: COLORS.SCREEN_SKIN,
-  },
-  fullScreenHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-    paddingTop: 50,
-    backgroundColor: COLORS.PANEL,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.TEXT,
-  },
-  backButton: {
-    padding: 5,
-    marginRight: 15,
-  },
-  fullScreenTitle: {
-    fontSize: 18,
-    fontFamily: 'Grandstander_700Bold',
-    color: COLORS.TEXT,
-    flex: 1,
-  },
-  headerSpacer: {
-    width: 34,
-  },
-  fullScreenBody: {
-    flex: 1,
-    backgroundColor: COLORS.SCREEN_SKIN,
-  },
-  fullScreenImage: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: COLORS.SCREEN_SKIN,
-    minHeight: '100%',
-  },
-  fullScreenPdf: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#f0f0f0',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.SCREEN_SKIN,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: COLORS.TEXT,
-    fontFamily: 'Grandstander_700Bold',
-  },
-  fullScreenTextContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  fullScreenText: {
-    fontSize: 16,
-    color: COLORS.TEXT,
-    lineHeight: 24,
-  },
-  pdfPreviewContainer: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    padding: 15,
-    marginTop: 10,
-    maxHeight: 300,
-  },
-  pdfPreviewText: {
-    fontSize: 12,
-    color: COLORS.TEXT,
-    fontFamily: 'monospace',
-    lineHeight: 16,
-  },
-  fullScreenInfoContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-    backgroundColor: COLORS.SCREEN_SKIN,
-  },
-  fullScreenInfoText: {
-    fontSize: 18,
-    color: COLORS.TEXT,
-    marginTop: 15,
-    textAlign: 'center',
-  },
-  openPdfButton: {
-    backgroundColor: COLORS.BUTTON,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  openPdfButtonText: {
-    fontSize: 16,
-    fontFamily: 'Grandstander_700Bold',
-    color: '#FFFFFF',
-  },
-  openFileButton: {
-    backgroundColor: COLORS.BUTTON,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  openFileButtonText: {
-    fontSize: 16,
-    fontFamily: 'Grandstander_700Bold',
-    color: '#FFFFFF',
-  },
-}
-);

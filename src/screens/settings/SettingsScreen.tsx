@@ -1,20 +1,32 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native';
-import { useTheme } from '../../theme/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Text } from '../../components/common/Text';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/MainStack';
+import {
+  useFonts,
+  Grandstander_700Bold,
+} from '@expo-google-fonts/grandstander';
 
 export const SettingsScreen = () => {
-  const { colors, isDark, themeMode, setThemeMode } = useTheme();
   const { user, signOut, setupBiometricAuth } = useAuth();
+  const { isDarkMode, colors, toggleDarkMode } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  
+  let [fontsLoaded] = useFonts({
+    Grandstander_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const handleBiometricToggle = async (value: boolean) => {
     if (value) {
@@ -70,54 +82,54 @@ export const SettingsScreen = () => {
     rightElement?: React.ReactNode;
   }) => (
     <TouchableOpacity
-      style={[styles.settingItem, { backgroundColor: colors.card, borderColor: colors.border }]}
+      style={[styles.settingItem, { backgroundColor: colors.PANEL, borderColor: colors.BUTTON }]}
       onPress={onPress}
       disabled={!onPress && !rightElement}
     >
-      <View style={[styles.iconContainer, { backgroundColor: colors.primary + '20' }]}>
-        <Ionicons name={icon} size={24} color={colors.primary} />
+      <View style={[styles.iconContainer, { backgroundColor: colors.BUTTON + '20' }]}>
+        <Ionicons name={icon} size={24} color={colors.BUTTON} />
       </View>
       <View style={styles.settingContent}>
-        <Text style={[styles.settingTitle, { color: colors.text }]}>{title}</Text>
+        <Text style={[styles.settingTitle, { color: colors.TEXT }]}>{title}</Text>
         {subtitle && (
-          <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
+          <Text style={[styles.settingSubtitle, { color: colors.TEXT }]}>
             {subtitle}
           </Text>
         )}
       </View>
       {rightElement || (showArrow && (
-        <Ionicons name="chevron-forward" size={20} color={colors.textTertiary} />
+        <Ionicons name="chevron-forward" size={20} color={colors.TEXT} />
       ))}
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-      <View style={[styles.header, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Settings</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.SCREEN_SKIN }]} edges={['top']}>
+      <View style={[styles.header, { backgroundColor: colors.PANEL, borderBottomColor: colors.BUTTON }]}>
+        <Text style={[styles.headerTitle, { color: colors.TEXT }]}>Settings</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>ACCOUNT</Text>
+          <Text style={[styles.sectionTitle, { color: colors.TEXT }]}>ACCOUNT</Text>
           
           <SettingItem
             icon="person-outline"
             title="Profile"
-            subtitle={user?.email || 'View your profile'}
-            onPress={() => {}}
+            subtitle="View your profile"
+            onPress={() => Alert.alert('Profile', 'Profile feature coming soon!')}
           />
           
           <SettingItem
             icon="key-outline"
             title="Change Password"
             subtitle="Update your password"
-            onPress={() => {}}
+            onPress={() => Alert.alert('Change Password', 'Password change feature coming soon!')}
           />
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>SECURITY</Text>
+          <Text style={[styles.sectionTitle, { color: colors.TEXT }]}>SECURITY</Text>
           
           <SettingItem
             icon="finger-print"
@@ -128,7 +140,7 @@ export const SettingsScreen = () => {
               <Switch
                 value={biometricEnabled}
                 onValueChange={handleBiometricToggle}
-                trackColor={{ false: colors.border, true: colors.primary }}
+                trackColor={{ false: colors.BUTTON, true: colors.BUTTON }}
                 thumbColor="#fff"
               />
             }
@@ -145,23 +157,23 @@ export const SettingsScreen = () => {
             icon="lock-closed-outline"
             title="Auto-Lock"
             subtitle="Lock app after inactivity"
-            onPress={() => {}}
+            onPress={() => Alert.alert('Auto-Lock', 'Auto-lock feature coming soon!')}
           />
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>PREFERENCES</Text>
+          <Text style={[styles.sectionTitle, { color: colors.TEXT }]}>PREFERENCES</Text>
           
           <SettingItem
             icon="moon-outline"
             title="Dark Mode"
-            subtitle={isDark ? 'Enabled' : 'Disabled'}
+            subtitle={isDarkMode ? 'Enabled' : 'Disabled'}
             showArrow={false}
             rightElement={
               <Switch
-                value={isDark}
-                onValueChange={(value) => setThemeMode(value ? 'dark' : 'light')}
-                trackColor={{ false: colors.border, true: colors.primary }}
+                value={isDarkMode}
+                onValueChange={toggleDarkMode}
+                trackColor={{ false: colors.BUTTON, true: colors.BUTTON }}
                 thumbColor="#fff"
               />
             }
@@ -176,7 +188,7 @@ export const SettingsScreen = () => {
               <Switch
                 value={notificationsEnabled}
                 onValueChange={setNotificationsEnabled}
-                trackColor={{ false: colors.border, true: colors.primary }}
+                trackColor={{ false: colors.BUTTON, true: colors.BUTTON }}
                 thumbColor="#fff"
               />
             }
@@ -184,48 +196,57 @@ export const SettingsScreen = () => {
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>STORAGE</Text>
+          <Text style={[styles.sectionTitle, { color: colors.TEXT }]}>STORAGE</Text>
           
           <SettingItem
             icon="cloud-outline"
             title="Storage Usage"
             subtitle="View storage details"
-            onPress={() => {}}
+            onPress={() => Alert.alert('Storage Usage', 'Storage usage feature coming soon!')}
           />
           
           <SettingItem
             icon="trash-outline"
             title="Clear Cache"
             subtitle="Free up space"
-            onPress={() => {}}
+            onPress={() => {
+              Alert.alert(
+                'Clear Cache',
+                'Are you sure you want to clear the cache?',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Clear', onPress: () => Alert.alert('Success', 'Cache cleared!') }
+                ]
+              );
+            }}
           />
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>ABOUT</Text>
+          <Text style={[styles.sectionTitle, { color: colors.TEXT }]}>ABOUT</Text>
           
           <SettingItem
             icon="information-circle-outline"
             title="About"
             subtitle="Version 1.0.0"
-            onPress={() => {}}
+            onPress={() => Alert.alert('About', 'FileLocker v1.0.0\n\nSecure file storage app')}
           />
           
           <SettingItem
             icon="document-text-outline"
             title="Privacy Policy"
-            onPress={() => {}}
+            onPress={() => Alert.alert('Privacy Policy', 'Privacy policy will be available soon.')}
           />
           
           <SettingItem
             icon="shield-outline"
             title="Terms of Service"
-            onPress={() => {}}
+            onPress={() => Alert.alert('Terms of Service', 'Terms of service will be available soon.')}
           />
         </View>
 
         <TouchableOpacity
-          style={[styles.signOutButton, { backgroundColor: colors.danger }]}
+          style={[styles.signOutButton, { backgroundColor: colors.BUTTON }]}
           onPress={handleSignOut}
         >
           <Ionicons name="log-out-outline" size={24} color="#fff" />
@@ -250,7 +271,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Grandstander_700Bold',
   },
   content: {
     padding: 20,
@@ -260,7 +281,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: 'Grandstander_700Bold',
     marginBottom: 12,
     marginLeft: 4,
     letterSpacing: 0.5,
@@ -269,7 +290,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 15,
     marginBottom: 8,
     borderWidth: 1,
   },
@@ -286,24 +307,25 @@ const styles = StyleSheet.create({
   },
   settingTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontFamily: 'Grandstander_700Bold',
     marginBottom: 2,
   },
   settingSubtitle: {
     fontSize: 14,
+    fontFamily: 'Grandstander_700Bold',
   },
   signOutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 15,
     marginTop: 20,
     gap: 8,
   },
   signOutText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Grandstander_700Bold',
   },
 });

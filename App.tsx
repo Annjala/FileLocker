@@ -7,7 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthStack } from './src/navigation/AuthStack';
 import { MainStack } from './src/navigation/MainStack';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
-import { ThemeProvider } from './src/theme/ThemeContext';
+import { ThemeProvider } from './src/contexts/ThemeContext';
 import { LoadingScreen } from './src/screens/LoadingScreen';
 
 export type RootStackParamList = {

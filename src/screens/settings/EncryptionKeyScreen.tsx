@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { Text } from '../../components/common/Text';
 import { Button } from '../../components/common/Button';
