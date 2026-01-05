@@ -32,7 +32,7 @@ export const LoginRegisterScreen = ({ navigation }: Props) => {
   };
 
   const handleLoginPress = () => {
-    navigation.navigate('LoginDetectingFace');
+    navigation.navigate('Login');
   };
 
   if (!fontsLoaded) {
